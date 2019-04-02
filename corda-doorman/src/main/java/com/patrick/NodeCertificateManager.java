@@ -62,7 +62,7 @@ public class NodeCertificateManager {
 		final String ST = "State";
 		final String O = "Organization";
 		final String L = "Locality";
-		final String C = "Country";
+		final String C = "GB";
 		CordaX500Name name = new CordaX500Name(CN, OU, O, L, ST, C);
 
 		KeyPair keyPair = Crypto.generateKeyPair(Crypto.ECDSA_SECP256R1_SHA256);
