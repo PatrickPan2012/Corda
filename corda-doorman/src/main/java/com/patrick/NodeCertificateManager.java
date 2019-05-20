@@ -70,8 +70,7 @@ public class NodeCertificateManager {
 		X509Certificate certificate = X509Utilities.createCertificate(CertificateType.INTERMEDIATE_CA,
 				rootCertificateAndKeyPair.getCertificate(), rootCertificateAndKeyPair.getKeyPair(),
 				name.getX500Principal(), keyPair.getPublic(),
-				new Pair<Duration, Duration>(Duration.ofMillis(0), Duration.ofDays(3650)),
-				null);
+				new Pair<Duration, Duration>(Duration.ofMillis(0), Duration.ofDays(3650)), null);
 		doormanCertAndKeyPair = new CertificateAndKeyPair(certificate, keyPair);
 	}
 
@@ -89,7 +88,6 @@ public class NodeCertificateManager {
 	}
 
 	private NodeCertificateManager() {
-		init();
 	}
 
 	public static NodeCertificateManager getInstance() {
