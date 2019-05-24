@@ -3,7 +3,7 @@
   - Tomcat 9.0.14
 
 # Installation
-  - Change log path in "src/main/resourceslogback.xml"
+  - Change log path in "src/main/resources/logback.xml"
   - Execute cmd "./gradlew clean build" to build and copy "build/libs/corda-doorman.war" to Tomcat
   - Start up Tomcat
   
