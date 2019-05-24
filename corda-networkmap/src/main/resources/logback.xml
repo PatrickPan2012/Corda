@@ -1,0 +1,28 @@
+<configuration>
+	<!--<property name="LOG_HOME" value="/opt/apache-tomcat-8.5.32/logs" />-->
+	<property name="LOG_HOME" value="D:\\tomcat\\apache-tomcat-9.0.14\\logs" />
+
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
+			by default -->
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+	<appender name="cordaNetworkMapFile" class="ch.qos.logback.core.FileAppender">
+		<file>${LOG_HOME}/corda-networkmap.log</file>
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<root level="info">
+		<appender-ref ref="stdout" />
+	</root>
+	<logger name="cordaNetworkMapLogger" level="debug" additivity="false">
+		<appender-ref ref="cordaNetworkMapFile" />
+		<appender-ref ref="stdout" />
+	</logger>
+</configuration>
