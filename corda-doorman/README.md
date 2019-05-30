@@ -13,3 +13,5 @@
   - Change working directory to "corda-release-V3-doorman" 
   - Execute cmd "java -jar corda.jar --initial-registration --network-root-truststore-password trustpass"
   - Many files will be created automatically. Especially, "nodekeystore.jks", "sslkeystore.jks" and "truststore.jks" can be found in  "certificate" folder. Use some tools such as "KeyStore Explorer" to open "sslkeystore.jks" with password "cordacadevpass" and view "cordaclienttls", legal name specified in "NodeCertificateManager.createDoormanCertificateAndKeyPair" can be seen in the certificate chain.
+
+More details can be seen [here](https://blog.csdn.net/ItachiUchiha/article/details/90705573).
