@@ -10,7 +10,7 @@
 # Demo
   - Suppose "Corda Doorman" is running otherwise please set it up first.
   - Unzip "corda-release-V3-networkmap.zip".
-  - Respectively change working directory to "Notary"/"PartyA"/"PartyB" and modify URL in "node.conf" if necessary before executing cmd "java -jar corda.jar --initial-registration --network-root-truststore-password trustpass".
+  - Respectively change working directory to "Notary"/"PartyA"/"PartyB" and modify URL in "node.conf" if necessary before executing cmd "java -jar corda.jar --initial-registration --network-root-truststore-password keystorepass".
   - Copy "Notary/certificates/nodekeystore.jks" to "TOMCAT_HOME/webapps/corda-networkmap/WEB-INF/classes/notaries".
   - Copy "PartyA/cordapps/cordapp-example-0.1.jar" to "TOMCAT_HOME/webapps/corda-networkmap/WEB-INF/classes/cordapps".
   - Respectively change working directory to "Notary"/"PartyA"/"PartyB" and execute cmd "java -jar corda.jar".

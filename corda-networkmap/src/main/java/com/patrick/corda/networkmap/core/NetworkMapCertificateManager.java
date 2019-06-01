@@ -1,21 +1,24 @@
 package com.patrick.corda.networkmap.core;
 
+import static net.corda.core.crypto.Crypto.toSupportedPrivateKey;
+import static net.corda.core.crypto.Crypto.toSupportedPublicKey;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.UnrecoverableKeyException;
 import java.security.cert.X509Certificate;
-import java.time.Duration;
 
-import javax.security.auth.x500.X500Principal;
-
-import org.bouncycastle.asn1.x509.NameConstraints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import kotlin.Pair;
-import net.corda.core.crypto.Crypto;
-import net.corda.nodeapi.internal.DevCaHelper;
 import net.corda.nodeapi.internal.crypto.CertificateAndKeyPair;
-import net.corda.nodeapi.internal.crypto.CertificateType;
-import net.corda.nodeapi.internal.crypto.X509Utilities;
+import net.corda.nodeapi.internal.crypto.KeyStoreUtilities;
 
 /**
  * 
@@ -31,35 +34,49 @@ public class NetworkMapCertificateManager {
 	private NetworkMapCertificateManager() {
 	}
 
-	private void createRootCertificateAndKeyPair() {
-		/**
-		 * A new root certificate should be created for production environment.
-		 */
-		rootCertificateAndKeyPair = DevCaHelper.INSTANCE.loadDevCa(X509Utilities.CORDA_ROOT_CA);
+	private void initRootCertificateAndKeyPair() {
+		try {
+			rootCertificateAndKeyPair = loadRootJKS();
+		} catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException | IOException e) {
+			LOGGER.error("Exception occurs during loading 'root.jks'.", e);
+		}
 	}
 
-	private X500Principal buildX500Principal() {
-		final String CN = "Common Name";
-		final String O = "Organization";
-		final String L = "Locality";
-		final String C = "GB";
-
-		String name = String.format("CN=%s,O=%s,L=%s,C=%s", CN, O, L, C);
-		LOGGER.debug("The X.500 distinguished name of Network Map is [{}].", name);
-
-		return new X500Principal(name);
+	private CertificateAndKeyPair loadRootJKS()
+			throws IOException, KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException {
+		return loadCertificateAndKeyPair("certificates/root.jks", "keystorepass", "cordarootca");
 	}
 
-	private void createNetworkMapCertificateAndKeyPair() {
-		X500Principal x500Principal = buildX500Principal();
-		KeyPair keyPair = Crypto.generateKeyPair(Crypto.ECDSA_SECP256R1_SHA256);
-		NameConstraints nameConstraints = null;
-		X509Certificate certificate = X509Utilities.createCertificate(CertificateType.NETWORK_MAP,
-				rootCertificateAndKeyPair.getCertificate(), rootCertificateAndKeyPair.getKeyPair(), x500Principal,
-				keyPair.getPublic(), new Pair<Duration, Duration>(Duration.ofMillis(0), Duration.ofDays(3650)),
-				nameConstraints);
+	private CertificateAndKeyPair loadNetworkMapJKS()
+			throws IOException, KeyStoreException, UnrecoverableKeyException, NoSuchAlgorithmException {
+		return loadCertificateAndKeyPair("certificates/network-map.jks", "keystorepass", "cordanetworkmap");
+	}
 
-		networkMapCertificateAndKeyPair = new CertificateAndKeyPair(certificate, keyPair);
+	private KeyStore loadKeyStore(String filename, String keyStorePassword) throws IOException, KeyStoreException {
+		try (InputStream inputStream = NetworkMapCertificateManager.class.getClassLoader()
+				.getResourceAsStream(filename)) {
+			return KeyStoreUtilities.loadKeyStore(inputStream, keyStorePassword);
+		}
+	}
+
+	private CertificateAndKeyPair loadCertificateAndKeyPair(String filename, String keyStorePassword, String alias)
+			throws KeyStoreException, IOException, UnrecoverableKeyException, NoSuchAlgorithmException {
+		KeyStore keyStore = loadKeyStore(filename, keyStorePassword);
+		X509Certificate certificate = (X509Certificate) keyStore.getCertificate(alias);
+		PublicKey publicKey = toSupportedPublicKey(certificate.getPublicKey());
+
+		PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, "keypass".toCharArray());
+		privateKey = toSupportedPrivateKey(privateKey);
+
+		return new CertificateAndKeyPair(certificate, new KeyPair(publicKey, privateKey));
+	}
+
+	private void initNetworkMapCertificateAndKeyPair() {
+		try {
+			networkMapCertificateAndKeyPair = loadNetworkMapJKS();
+		} catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException | IOException e) {
+			LOGGER.error("Exception occurs during loading 'network-map.jks'.", e);
+		}
 	}
 
 	public CertificateAndKeyPair getRootCertificateAndKeyPair() {
@@ -72,10 +89,10 @@ public class NetworkMapCertificateManager {
 
 	public void init() {
 		try {
-			createRootCertificateAndKeyPair();
-			createNetworkMapCertificateAndKeyPair();
+			initRootCertificateAndKeyPair();
+			initNetworkMapCertificateAndKeyPair();
 		} catch (Exception e) {
-			LOGGER.error("Exception occurs in CertificateManager.init().", e);
+			LOGGER.error("Unexpected exception occurs in CertificateManager.init().", e);
 		}
 	}
 
