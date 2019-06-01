@@ -16,3 +16,5 @@
   - Respectively change working directory to "Notary"/"PartyA"/"PartyB" and execute cmd "java -jar corda.jar".
   - Respectively change working directory to "PartyA"/"PartyB" and execute cmd "java -jar corda-webserver.jar".
   - Use Chrome or other browsers to visit "http://localhost:10009/web/example/" and "http://localhost:10012/web/example/" and create "IOU".
+
+More details can be seen [here](https://blog.csdn.net/ItachiUchiha/article/details/90732051).
