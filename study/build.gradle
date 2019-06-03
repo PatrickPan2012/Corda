@@ -1,0 +1,22 @@
+plugins {
+	id 'org.sonarqube' version '2.6.2'
+}
+
+plugins {
+    id 'java'
+	id 'jacoco'
+	id 'eclipse'
+}
+
+repositories {
+    // Use jcenter for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+}
+
+dependencies {
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.12'
+	
+	implementation 'net.corda:corda-node-api:3.3-corda'
+}
