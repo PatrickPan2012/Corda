@@ -4,6 +4,7 @@ plugins {
 
 plugins {
     id 'war'
+	id 'jacoco'
 	id 'eclipse'
 }
 
