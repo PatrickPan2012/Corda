@@ -70,7 +70,7 @@ public class WhitelistedContractImplManager {
 
 		if (Objects.isNull(cordapps) || cordapps.length == 0) {
 			LOGGER.warn(
-					"The directory 'cordapps' is empty but whitelist of contract implementation should not be empty.");
+					"The directory 'cordapps' is empty but whitelist of contract implementations should not be empty. Otherwise, all contract implementations could be executed.");
 			return;
 		}
 
